@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Cucumber Feature Report</title>
+  <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+  <style type="text/css">
+    <%=styles %>
+  </style>
+  <meta charset="UTF-8">
+</head>
+
+<body>
+
+  <div class="navbar navbar-default navbar-static-top" role="navigation">
+    <div class="container">
+      <div class="navbar-header" style="width: 100%; position: relative;">
+        <%var brandTitle = suite.brandTitle ? suite.brandTitle : 'Cucumberjs Report' %>
+        <a class="navbar-brand"style="width: 100%; text-align: center;">
+          <%= brandTitle %></a>
+        <div class="project-name visible-md visible-lg" style="left: 0; margin-left: 0;">
+          <img src="<%= suite.logo %>">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+
+    <div class="generated-on">
+      <%= suite.time %>
+    </div>
+
+    <div class="row" style="padding-bottom: 15px;">
+      <div class="col-md-12">
+        <span style="font-size: 17px; float: left;" class="label label-info" title=<%=suite.reportAs %>>Number of features:
+          <%= suite.total %></span>
+        <span style="font-size: 17px; float: left; margin-left: 10px;" class="label label-info" title=<%=suite.reportAs %>>Number of scenarios:
+          <%= suite.scenarios.total %></span>
+        <!-- olds -->
+        <span style="font-size: 17px; float: left; margin-left: 10px;" class="label label-success" title=<%=suite.reportAs %>>Passed scenarios:
+          <%= suite.passed %></span>
+        <span style="font-size: 17px; float: left; margin-left: 10px;" class="label label-danger" title=<%=suite.reportAs %>>Failed scenarios:
+          <%= suite.failed %></span>
+
+          <span style="font-size: 17px; float: right;" class="label label-info">Time Elapsed:
+            <%= suite.totalTime %></span>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="chart col-lg-6 col-md-6" id="piechart_features"></div>
+      <div class="chart col-lg-6 col-md-6" id="piechart_scenarios"></div>
+    </div>
+
+    <% if (suite.metadata) { %>
+    <div class="panel panel-default">
+      <div class="panel-heading open">
+        <h4 class="panel-title">
+          <a data-toggle="collapse" href="#logOutput" aria-expanded="true">
+            <i class="glyphicon glyphicon-chevron-down"></i>
+            <i class="glyphicon glyphicon-chevron-right"></i>
+            <b>Metadata</b>
+          </a>
+        </h4>
+      </div>
+      <div id="logOutput" class="panel-collapse collapse in">
+        <div class="panel-body">
+          <div class="row">
+            <% var isLeft = true %>
+            <% _.map(suite.metadata, function(value, key) { %>
+            <% var className %>
+            <% if (isLeft) { className = "pull-left"; isLeft = false; }
+               else { className= "pull-right-lg"; isLeft = true } %>
+            <div class="clearfix metadata col-xs-12 col-sm-6 col-md-6 col-lg-6">
+              <div class=<%=className %>>
+                <strong>
+                  <%= key %>: </strong>
+                <%= value %>
+              </div>
+            </div>
+            <% }) %>
+          </div>
+        </div>
+      </div>
+    </div>
+    <% } %>
+
+    <%= features %>
+
+  </div>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+  <script src="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.5.1/moment.min.js"></script>
+  <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+  <script type="text/javascript">
+    google.load("visualization", "1", { packages: ["corechart"] });
+    google.setOnLoadCallback(function () {
+      drawChart({
+        "title": "Features",
+        "failed": <%= suite.features.summary.failed %>,
+        "passed": <%= suite.features.summary.passed %>,
+        "notdefined": <%= suite.features.summary.notdefined %>,
+        "pending": <%= suite.features.summary.pending %>,
+        "skipped": <%= suite.features.summary.skipped %>,
+        "ambiguous": <%= suite.features.summary.ambiguous %>
+      })
+    });
+    google.setOnLoadCallback(function () {
+      drawChart({
+        "title": "Scenarios",
+        "failed": <%= suite.scenarios.failed %>,
+        "passed": <%= suite.scenarios.passed %>,
+        "notdefined": <%= suite.scenarios.notdefined %>,
+        "pending": <%= suite.scenarios.pending %>,
+        "skipped": <%= suite.scenarios.skipped %>,
+        "ambiguous": <%= suite.scenarios.ambiguous %>
+      })
+    });
+  </script>
+  <script>
+      <%= script %>
+      <%= piechart %>
+      <%= screenshot %>
+  </script>
+</body>
+
+</html>
